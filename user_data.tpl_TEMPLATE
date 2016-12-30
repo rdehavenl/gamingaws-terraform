@@ -1,5 +1,8 @@
 <powershell>
 
+## We have a couple of variables now:
+$ZeroTierNetworkID=n0t4n37ID
+
 function Disable-WindowsFirewall {
     # Show hidden files, show file extentions, and show
     # system files, a.k.a. SuperHidden files (snrk)
@@ -40,6 +43,21 @@ function Reload-EnvironmentVars {
     }
 }
 
+function Configure-ZeroTierOne {
+    # Disable IPv6
+    Set-Net6to4Configuration -State disabled
+    Set-NetTeredoConfiguration -Type disabled
+    Set-NetIsatapConfiguration -State disabled
+
+    # Install and configure the ZeroTier-One Client using
+    choco install -y zerotier-one
+    # Setup ZeroTier-One to join network
+    C:\ProgramData\ZeroTier\One\zerotier-one_x64.exe -q join $ZeroTierNetworkID
+
+## Todo
+# Fix MTU if needed
+}
+
 Rename-Computer -NewName gaming-pc
 
 Disable-UserAccessControl
@@ -60,13 +78,15 @@ iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
 
 Reload-EnvironmentVars
 
+Configure-ZeroTierOne
+
 # This doesn't work, need to figure out why
 #choco install geforce-game-ready-driver-win7
 
 # Install steam, openvpn, openssl, and firefox.
 # I chose firefox here because google chrome installs an update
 #  service that is marked failed by Server Manager.  Annoying.
-choco install -y steam openvpn firefox openssl.light
+choco install -y steam firefox openssl.light
 
 # Enable sound in server 2012
 Set-Service Audiosrv -startuptype "Automatic"
@@ -75,7 +95,6 @@ Start-Service Audiosrv
 # Stage installer files
 # Needs to be manually installed at the moment
 iwr -OutFile C:\Users\Administrator\Desktop\razer-surround.exe http://www.razerzone.com/surround/download
-iwr -OutFile C:\Users\Administrator\Desktop\hamachi.msi https://secure.logmein.com/hamachi.msi
 iwr -OutFile C:\Users\Administrator\Desktop\directx_Jun2010_redist.exe https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe
 iwr -OutFile C:\Users\Administrator\Desktop\X_Audio_Input.zip http://www.win2012workstation.com/wp-content/uploads/2012/08/X_Audio_Input.zip
 

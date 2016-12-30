@@ -21,6 +21,9 @@ as terraform seems to have trouble otherwise.
 Speaking of which, copy the variable.tf_TEMPLATE to variable.tf, and modify as necessary.
 Certainly change the credentials file path, and the subnets if you want to.
 
+You will also need to copy the user_data.tpl_TEMPLATE to user_data.tpl and update the
+ZeroTierNetworkID as needed. See the ZeroTier Section below
+
 Validate the terraform will work as you expect
 ```
 terraform plan
@@ -53,6 +56,23 @@ You will need to do the following (ToDo-Automation):
 
 Restart the computer after you verify it's good (also on the TODO automation list)
 
+ZeroTier (TODO Automation)
+- https://www.zerotier.com/product-one.shtml
+- https://github.com/zerotier/ZeroTierOne/tree/master/service
+
+ZeroTier Setup
+- Setup Account @ my.zerotier.com
+- Create a Network, and note the NetworkID
+- Add the NetworkID to your user_data.tpl
+- Automate:
+  - Authorize the Client into the secure Network
+```
+# Get the Network Members
+curl -H 'Authorization: Bearer {API_TOKEN}' -v https://my.zerotier.com/api/network/{NETWORKID}/member -XGET
+
+# Authorize the node
+curl -H 'Content-Type: application/json' -H 'Authorization: Bearer {API_TOKEN}' https://my.zerotier.com/api/network/{NEWORK_ID}/member/{MEMBER_DI} -XPOST -d '{"config":{"authorized":true}}'
+```
 
 A good resource to use: http://www.win2012workstation.com/
 Other Good Resources:
