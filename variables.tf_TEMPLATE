@@ -34,7 +34,8 @@ variable "cidr_block_subnet_public" {
 
 # This is the cidr block for the network allowed to access the ec2 instance.
 variable "cidr_block_srcnet" {
-  default = "10.10.10.10/32"
+  type = "list",
+  default = ["10.10.10.10/32"]
 }
 
 # Windows Server 2012 with NVIDIA GRID GPU Driver on Windows Server 2012 6.2 
